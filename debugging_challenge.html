@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debugging Challenge</title>
+    <style>
+      /* General Reset */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #f4f4f9, #e0e0f5);
+        color: #333;
+        line-height: 1.6;
+      }
+
+      /* Header Styles */
+      header {
+        background: linear-gradient(135deg, #4caf50, #45a049);
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        font-weight: bold;
+        animation: fadeInDown 1s ease-in-out;
+      }
+
+      header p {
+        font-size: 1.2em;
+        margin-top: 10px;
+        animation: fadeInUp 1s ease-in-out;
+      }
+
+      #timer {
+        font-size: 1.5em;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #ffeb3b;
+        animation: pulse 2s infinite;
+      }
+
+      /* Main Content */
+      main {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      #question-container {
+        margin: 20px auto;
+        padding: 25px;
+        background: white;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      #question-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      #question-container h1 {
+        color: #4caf50;
+        font-size: 2em;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 10px;
+      }
+
+      #question-container h3 {
+        color: #333;
+        font-size: 1.5em;
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      #question-container h4 {
+        color: #555;
+        font-size: 1.2em;
+        margin-top: 15px;
+        margin-bottom: 10px;
+      }
+
+      #question-container pre {
+        background: #f8f8f8;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        overflow-x: auto;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.95em;
+        line-height: 1.5;
+      }
+
+      #question-container code {
+        color: #d63384;
+      }
+
+      #next-set-button {
+        display: block;
+        margin: 30px auto;
+        padding: 15px 30px;
+        background: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: bold;
+        transition: background 0.3s ease, transform 0.3s ease;
+      }
+
+      #next-set-button:hover {
+        background: #45a049;
+        transform: scale(1.05);
+      }
+
+      /* Footer Styles */
+      footer {
+        text-align: center;
+        padding: 20px;
+        background: #333;
+        color: white;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 1em;
+      }
+
+      /* Animations */
+      @keyframes fadeInDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Debugging Challenge</h1>
+      <p>Identify and fix the errors manually in 1 hour!</p>
+      <div id="timer">Time Left: 1:00:00</div>
+    </header>
+    <main>
+      <div id="question-container"></div>
+      <button id="next-set-button">Next Set</button>
+    </main>
+    <footer>
+      <p>&copy; 2025 Debugging Challenge</p>
+    </footer>
+    <script>
+      // Timer Logic
+      let timeLeft = 3600; // 1 hour in seconds
+
+      function updateTimer() {
+        const timer = document.getElementById("timer");
+        const hours = Math.floor(timeLeft / 3600);
+        const minutes = Math.floor((timeLeft % 3600) / 60);
+        const seconds = timeLeft % 60;
+        timer.textContent = `Time Left: ${hours}:${minutes
+          .toString()
+          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+        if (timeLeft > 0) {
+          timeLeft--;
+        } else {
+          alert("Time is up!");
+          document.getElementById("next-set-button").disabled = true;
+        }
+      }
+
+      setInterval(updateTimer, 1000);
+
+      // Question Data
+      const questions = [
+        {
+          title: "Set 1: Debugging Questions (C, C++, Java, Python)",
+          content: `
+        <h3>1. Missing Header/Import</h3>
+        <h4>C:</h4>
+        <pre><code>int main() {
+    printf("Hello, World!\\n");
+    return 0;
+}</code></pre>
+        
+        <h4>C++:</h4>
+        <pre><code>int main() {
+    cout << "Hello, World!\\n"; 
+    return 0;
+}</code></pre>
+        
+
+        <h4>Java:</h4>
+        <pre><code>public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!)"; 
+    }
+}</code></pre>
+        
+
+        <h4>Python:</h4>
+        <pre><code>print("Hello, World!)</pre>
+       
+
+        <h3>2. Incorrect Format Specifier</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+int main() {
+    float x = 5.5;
+    printf("%d", x); 
+    return 0;
+}</code></pre>
+       
+
+        <h4>C++:</h4>
+        <pre><code>#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    float x = 5.5;
+    cout << "Value: " << x << endl; 
+    return 0;
+}</code></pre>
+
+        <h4>Java:</h4>
+        <pre><code>public class Main {
+    public static void main(String[] args) {
+        float x = 5.5;
+        System.out.printf("%d", x); 
+    }
+}</code></pre>
+        
+
+        <h4>Python:</h4>
+        <pre><code>x = 5.5
+print("%d" % x)</code></pre>
+       
+        <h3>3. Array Index Out of Bounds</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+int main() {
+    int arr[3] = {1, 2, 3};
+    printf("%d\\n", arr[3]); 
+    return 0;
+}</code></pre>
+        
+
+        <h4>C++:</h4>
+        <pre><code>#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    int arr[3] = {1, 2, 3};
+    cout << arr[3]; 
+    return 0;
+}</code></pre>
+        
+
+        <h4>Python:</h4>
+        <pre><code>arr = [1, 2, 3]
+print(arr[3])</code></pre>
+        
+
+        <h3>4. Missing Semicolon/Colon</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+int main() {
+    int x = 10
+    printf("%d", x); 
+    return 0;
+}</code></pre>
+
+<h3>4. Missing Semicolon/Colon</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+int main() {
+    int x = 10
+    printf("%d", x); 
+    return 0;
+}</code></pre>
+        
+
+        <h4>C++:</h4>
+        <pre><code>cpp
+#include <iostream>
+using namespace std;
+int main() {
+    int x = 10
+    cout << x; 
+    return 0;
+} </code></pre>
+
+<h4>JAVA:</h4>
+        <pre><code>public class Main {
+    public static void main(String[] args) {
+        int x = 10
+        System.out.println(x); 
+    }
+} </code></pre>
+        
+
+        <h4>Python:</h4>
+        <pre><code>for i in range(5)
+    print(i) </code></pre>
+        
+        `,
+        },
+        {
+          title: "Set 2: Debugging Questions (C, C++, Java, Python)",
+          content: `
+        <h3>6. Undefined Function</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+    int main() {
+        printf("%d", square(5)); 
+        return 0;
+    }</code></pre>
+       
+    
+        <h4>C++:</h4>
+        <pre><code>#include &lt;iostream&gt;
+    using namespace std;
+    int main() {
+        cout << square(5); 
+        return 0;
+    }</code></pre>
+        
+    
+        <h4>Java:</h4>
+        <pre><code>public class Main {
+        public static void main(String[] args) {
+            System.out.println(square(5)); 
+        }
+    }</code></pre>
+        
+    
+        <h4>Python:</h4>
+        <pre><code>print(square(5)) </code></pre>
+        
+    
+        <h3>7. Logical Error in Loop</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+    int main() {
+        for (int i = 0; i <= 5; i--){ 
+            printf("%d ", i);
+        }
+        return 0;
+    }</code></pre>
+        
+    
+        <h4>C++:</h4>
+        <pre><code>#include &lt;iostream&gt;
+    using namespace std;
+    int main() {
+        for (int i = 0; i >= 0; i++) {
+            cout << i << " ";
+        }
+        return 0;
+    }</code></pre>
+        
+    
+        <h4>Java:</h4>
+        <pre><code>public class Main {
+        public static void main(String[] args) {
+            for (int i = 0; i >= 0; i--) { 
+                System.out.println(i);
+            }
+        }
+    }</code></pre>
+        
+    
+        <h4>Python:</h4>
+        <pre><code>i = 0
+    while i <= 5:
+        print(i)
+    # Error: Infinite loop (i is never incremented)</code></pre>
+        
+    
+        <h3>8. Incorrect Return Type</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+    void main() { 
+        printf("Hello");
+    }</code></pre>
+        
+    
+        <h4>C++:</h4>
+        <pre><code>#include &lt;iostream&gt;
+    using namespace std;
+    void main() { 
+        cout << "Hello";
+    }</code></pre>
+        
+    
+        <h4>Java:</h4>
+        <pre><code>public class Main {
+        public static void main(String[] args) {
+            return "Hello"; 
+        }
+    }</code></pre>
+        
+    
+        <h4>Python:</h4>
+        <pre><code>def greet():
+        return print("Hello")</code></pre>
+        
+    
+        <h3>9. Division by Zero</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+    int main() {
+        int a = 5, b = 0;
+        printf("%d", a / b); 
+        return 0;
+    }</code></pre>
+        
+    
+        <h4>C++:</h4>
+        <pre><code>#include &lt;iostream&gt;
+    using namespace std;
+    int main() {
+        int a = 5, b = 0;
+        cout << (a / b); 
+        return 0;
+    }</code></pre>
+        
+    
+        <h4>Java:</h4>
+        <pre><code>public class Main {
+        public static void main(String[] args) {
+            int a = 5, b = 0;
+            System.out.println(a / b);
+        }
+    }</code></pre>
+        
+    
+        <h4>Python:</h4>
+        <pre><code>a, b = 5, 0
+    print(a / b) </code></pre>
+        
+    
+        <h3>10. Off-by-One Error</h3>
+        <h4>C:</h4>
+        <pre><code>#include &lt;stdio.h&gt;
+    int main() {
+        int arr[5] = {1, 2, 3, 4, 5};
+        for (int i = 0; i <= 5; i++) { 
+            printf("%d ", arr[i]);
+        }
+        return 0;
+    }</code></pre>
+        
+    
+        <h4>C++:</h4>
+        <pre><code>#include &lt;iostream&gt;
+    using namespace std;
+    int main() {
+        int arr[5] = {1, 2, 3, 4, 5};
+        for (int i = 0; i <= 5; i++) { 
+            cout << arr[i] << " ";
+        }
+        return 0;
+    }</code></pre>
+        
+    
+        <h4>Java:</h4>
+        <pre><code>public class Main {
+        public static void main(String[] args) {
+            int[] arr = {1, 2, 3, 4, 5};
+            for (int i = 0; i <= arr.length; i++) { 
+                System.out.println(arr[i]);
+            }
+        }
+    }</code></pre>
+        
+    
+        <h4>Python:</h4>
+        <pre><code>arr = [1, 2, 3, 4, 5]
+    for i in range(len(arr) + 1):  
+        print(arr[i])</code></pre>
+        
+        `,
+        },
+      ];
+
+      let currentSet = 0;
+
+      // Display Questions
+      function displayQuestions() {
+        const container = document.getElementById("question-container");
+        container.innerHTML = `<h1>${questions[currentSet].title}</h1>${questions[currentSet].content}`;
+      }
+
+      document
+        .getElementById("next-set-button")
+        .addEventListener("click", () => {
+          if (currentSet < questions.length - 1) {
+            currentSet++;
+            displayQuestions();
+          } else {
+            alert("You have reached the end of the challenge!");
+          }
+        });
+
+      // Initial Display
+      displayQuestions();
+    </script>
+  </body>
+</html>
